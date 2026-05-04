@@ -19,10 +19,6 @@ export default function App() {
               path="/assets"
               element={<SheetPage sheetKeyword="asset" title="Assets" />}
             />
-            <Route
-              path="/input-sheet"
-              element={<SheetPage sheetKeyword="input" title="Input Sheet" />}
-            />
           </Route>
         </Routes>
       </BrowserRouter>

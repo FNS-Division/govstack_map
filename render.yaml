@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: govstack-global-demo
+    env: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    pullRequestPreviewsEnabled: true
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache

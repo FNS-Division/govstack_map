@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+/* ── ITU Brand Tokens ── */
+:root {
+  --itu-navy:   #1A2847;
+  --itu-blue:   #009EDB;
+  --itu-blue-light: #E5F5FC;
+  --itu-blue-mid:   #4DB8E8;
+  --itu-text:   #1A2847;
+}
+
+/* ── Leaflet ── */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  font-family: inherit;
+}
+
+/* Remove default leaflet focus outline on map tiles */
+.leaflet-tile-pane { outline: none; }
+
+/* ── Popup card overrides ── */
+.leaflet-popup-content-wrapper {
+  border-radius: 10px !important;
+  box-shadow: 0 6px 24px rgba(26, 40, 71, 0.18) !important;
+  padding: 0 !important;
+  overflow: hidden;
+  border: none !important;
+}
+.leaflet-popup-content {
+  margin: 0 !important;
+  width: 272px !important;
+}
+.leaflet-popup-tip-container {
+  display: none !important;
+}
+.leaflet-popup-close-button {
+  color: rgba(255,255,255,0.8) !important;
+  font-size: 18px !important;
+  top: 6px !important;
+  right: 8px !important;
+  z-index: 10;
+}
+.leaflet-popup-close-button:hover {
+  color: #fff !important;
+}
+
+/* ── Attribution ── */
+.leaflet-control-attribution {
+  font-size: 10px !important;
+  background: rgba(255,255,255,0.75) !important;
+  backdrop-filter: blur(4px);
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #f0f4f8; }
+::-webkit-scrollbar-thumb { background: #c7d4e0; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #009EDB; }

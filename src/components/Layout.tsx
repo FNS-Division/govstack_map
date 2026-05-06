@@ -49,7 +49,7 @@ export default function Layout() {
             </div>
             <div className="leading-none">
               <div className="font-bold text-gray-800 text-sm">GovStack</div>
-              <div className="text-gray-400 text-[10px] leading-tight">Global Demo</div>
+              <div className="text-gray-400 text-[10px] leading-tight">Dashboard Demo</div>
             </div>
           </div>
 

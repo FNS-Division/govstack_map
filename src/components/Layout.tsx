@@ -1,4 +1,5 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { useAuthenticator } from '@aws-amplify/ui-react';
 
 const navItems = [
   {
@@ -33,6 +34,7 @@ const navItems = [
 export default function Layout() {
   const location = useLocation();
   const isMap = location.pathname === '/';
+  const { signOut } = useAuthenticator();
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
@@ -74,10 +76,18 @@ export default function Layout() {
             ))}
           </div>
 
-          {/* Right badge */}
-          <div className="ml-auto hidden sm:flex items-center gap-1.5 text-[10px] text-gray-400 font-medium">
-            <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
-            Live
+          {/* Right — live badge + logout */}
+          <div className="ml-auto flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-1.5 text-[10px] text-gray-400 font-medium">
+              <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
+              Live
+            </div>
+            <button
+              onClick={signOut}
+              className="text-xs text-gray-500 hover:text-red-500 font-medium transition-colors"
+            >
+              Sign out
+            </button>
           </div>
         </div>
       </nav>

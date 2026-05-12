@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Authenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
 import { DataProvider } from './context/DataContext';
 import Layout from './components/Layout';
 import GlobalMap from './routes/GlobalMap';
@@ -6,6 +8,7 @@ import SheetPage from './routes/SheetPage';
 
 export default function App() {
   return (
+    <Authenticator hideSignUp>
     <DataProvider>
       <BrowserRouter>
         <Routes>
@@ -23,5 +26,6 @@ export default function App() {
         </Routes>
       </BrowserRouter>
     </DataProvider>
+    </Authenticator>
   );
 }

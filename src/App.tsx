@@ -4,7 +4,8 @@ import '@aws-amplify/ui-react/styles.css';
 import { DataProvider } from './context/DataContext';
 import Layout from './components/Layout';
 import GlobalMap from './routes/GlobalMap';
-import SheetPage from './routes/SheetPage';
+import ExpertsDirectoryPage from './routes/ExpertsDirectoryPage';
+import AssetsDirectoryPage from './routes/AssetsDirectoryPage';
 
 export default function App() {
   return (
@@ -14,14 +15,8 @@ export default function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<GlobalMap />} />
-            <Route
-              path="/experts"
-              element={<SheetPage sheetKeyword="expert" title="Experts" />}
-            />
-            <Route
-              path="/assets"
-              element={<SheetPage sheetKeyword="asset" title="Assets" />}
-            />
+            <Route path="/experts" element={<ExpertsDirectoryPage />} />
+            <Route path="/assets" element={<AssetsDirectoryPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

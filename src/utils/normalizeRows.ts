@@ -64,6 +64,8 @@ export function normalizeHeader(header: string): string {
     'output': 'Output',
     'comments ': 'Comments',
     'comments': 'Comments',
+    'target audiance': 'Target Audience',
+    'type of asset': 'Type of Asset',
   };
   const lower = h.toLowerCase();
   return map[lower] ?? h;

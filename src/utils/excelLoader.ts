@@ -1,4 +1,5 @@
 import * as XLSX from 'xlsx';
+import { fixKnownDataTypos } from './dataTypos';
 import { normalizeHeader } from './normalizeRows';
 
 export interface SheetData {
@@ -41,7 +42,7 @@ export async function loadExcel(filePath: string): Promise<Record<string, SheetD
       normalizedHeaders.forEach((header, idx) => {
         const cell = rowArr[idx];
         const val = cell !== null && cell !== undefined ? String(cell).trim() : '';
-        row[header] = val;
+        row[header] = val ? fixKnownDataTypos(val) : val;
         if (val) hasValue = true;
       });
 

@@ -58,3 +58,121 @@
 ::-webkit-scrollbar-track { background: #f0f4f8; }
 ::-webkit-scrollbar-thumb { background: #c7d4e0; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #009EDB; }
+
+/* ── GovStack login (Amplify Authenticator) ── */
+.govstack-auth[data-amplify-authenticator] {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background-color: #f8fafc;
+  font-family: inherit;
+}
+
+.govstack-auth .amplify-authenticator__router {
+  width: 100%;
+  max-width: 26rem;
+  background: transparent;
+  box-shadow: none;
+}
+
+.govstack-auth [data-amplify-container] {
+  width: min(100%, 30rem);
+}
+
+.govstack-auth [data-amplify-router] {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  box-shadow: 0 1px 1px rgba(15, 23, 42, 0.05), 0 4px 12px rgba(15, 23, 42, 0.08);
+  padding: 2rem 2rem 0;
+}
+
+.govstack-auth [data-amplify-form] {
+  padding: 0 !important;
+}
+
+.govstack-auth .amplify-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  box-shadow: 0 1px 1px rgba(15, 23, 42, 0.05), 0 4px 12px rgba(15, 23, 42, 0.08);
+  background: #ffffff;
+  padding: 2rem 2rem 2.25rem;
+}
+
+.govstack-auth .amplify-flex {
+  gap: 1rem;
+}
+
+.govstack-auth .amplify-button--primary {
+  background-color: #0539e3;
+  font-weight: 500;
+}
+
+.govstack-auth .amplify-button--primary:hover {
+  background-color: #0432c4;
+}
+
+.govstack-auth .amplify-button--primary:focus {
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px rgba(5, 57, 227, 0.35);
+}
+
+.govstack-auth .amplify-input,
+.govstack-auth .amplify-field__show-password {
+  border-radius: 0.5rem;
+}
+
+.govstack-auth .amplify-input {
+  min-height: 2.75rem;
+  padding: 0.5rem 0.875rem;
+}
+
+.govstack-auth .amplify-passwordfield .amplify-field-group {
+  gap: 0;
+}
+
+.govstack-auth .amplify-passwordfield .amplify-input {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+  padding-inline-end: 0.875rem;
+}
+
+.govstack-auth .amplify-passwordfield .amplify-field__show-password {
+  height: 100%;
+  width: 2.75rem;
+  min-width: 2.75rem;
+  border: 1px solid #dbe3ee;
+  border-inline-start: 0;
+  border-radius: 0 0.5rem 0.5rem 0;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.govstack-auth .amplify-passwordfield .amplify-field__show-password:hover {
+  background: #f8fafc;
+}
+
+.govstack-auth .amplify-field__show-password:focus {
+  border-color: #0539e3;
+  box-shadow: 0 0 0 1px #0539e3;
+}
+
+.govstack-auth .amplify-tabs__item--active {
+  color: #0539e3;
+  border-color: #0539e3;
+}
+
+.govstack-auth .amplify-link {
+  color: #0539e3;
+  font-weight: 500;
+}
+
+.govstack-auth .amplify-link:hover {
+  color: #0432c4;
+}
+
+.govstack-auth .amplify-text[data-variation='secondary'] {
+  color: #64748b;
+}

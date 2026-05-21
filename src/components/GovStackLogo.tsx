@@ -21,7 +21,7 @@ export default function GovStackLogo({ className = '' }: { className?: string })
       <span className="hidden sm:block text-[11px] font-medium uppercase tracking-wide text-slate-500 leading-tight">
         Dashboard
         <span className="block text-slate-400 font-normal normal-case tracking-normal text-[10px]">
-          demo
+          Beta
         </span>
       </span>
     </a>

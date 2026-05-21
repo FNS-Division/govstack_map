@@ -1,4 +1,5 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import GovStackLogo from './GovStackLogo';
 
@@ -35,7 +36,35 @@ const navItems = [
 export default function Layout() {
   const location = useLocation();
   const isMap = location.pathname === '/';
-  const { signOut } = useAuthenticator();
+  const { signOut, user } = useAuthenticator(context => [context.signOut, context.user]);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+  const username = user?.signInDetails?.loginId || user?.username || 'User';
+  const userInitial = username.trim().charAt(0).toUpperCase() || 'U';
+
+  useEffect(() => {
+    if (!isUserMenuOpen) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!userMenuRef.current?.contains(event.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isUserMenuOpen]);
 
   return (
     <div className="flex flex-col h-screen bg-slate-50">
@@ -72,13 +101,56 @@ export default function Layout() {
               <span className="h-2 w-2 rounded-full bg-[#0539E3] shadow-[0_0_0_3px_rgba(5,57,227,0.2)]" />
               Live
             </div>
-            <button
-              type="button"
-              onClick={signOut}
-              className="text-sm font-medium text-slate-600 underline-offset-4 transition-colors hover:text-[#0539E3] hover:underline"
-            >
-              Sign out
-            </button>
+            <div ref={userMenuRef} className="relative">
+              <button
+                type="button"
+                onClick={() => setIsUserMenuOpen(open => !open)}
+                className="flex items-center gap-2 rounded-full border border-slate-200 bg-white py-1 pl-1 pr-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50"
+                aria-haspopup="menu"
+                aria-expanded={isUserMenuOpen}
+              >
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#0539E3] text-xs font-semibold text-white">
+                  {userInitial}
+                </span>
+                <span className="hidden sm:inline">Account</span>
+                <svg
+                  className={`h-4 w-4 text-slate-400 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {isUserMenuOpen && (
+                <div
+                  role="menu"
+                  className="absolute right-0 top-full z-20 mt-2 w-64 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg shadow-slate-900/10"
+                >
+                  <div className="border-b border-slate-100 px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-wide text-slate-400">Signed in as</p>
+                    <p className="mt-1 truncate text-sm font-semibold text-slate-900" title={username}>
+                      {username}
+                    </p>
+                  </div>
+                  <div className="p-1.5">
+                    <button
+                      type="button"
+                      role="menuitem"
+                      onClick={signOut}
+                      className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-[#0539E3]"
+                    >
+                      <svg className="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
+                      </svg>
+                      Sign out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </nav>
       </header>

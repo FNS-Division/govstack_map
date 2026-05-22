@@ -1,0 +1,1002 @@
+{
+  "source": "administrations-a672bcdb-9080-4d33-b819-6be12e880e3b.xlsx",
+  "regionModel": "govstack-five-regions",
+  "updatedAt": "2026-05-22",
+  "regions": [
+    {
+      "code": "Africa",
+      "countries": [
+        {
+          "symbol": "ALG",
+          "designation": "Algeria (People's Democratic Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "AGL",
+          "designation": "Angola (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "BHR",
+          "designation": "Bahrain (Kingdom of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "BEN",
+          "designation": "Benin (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "BOT",
+          "designation": "Botswana (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "BFA",
+          "designation": "Burkina Faso",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "BDI",
+          "designation": "Burundi (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "CPV",
+          "designation": "Cabo Verde (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "CME",
+          "designation": "Cameroon (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "CAF",
+          "designation": "Central African Republic",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "TCD",
+          "designation": "Chad (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "COM",
+          "designation": "Comoros (Union of the)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "COG",
+          "designation": "Congo (Republic of the)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "CTI",
+          "designation": "Côte d'Ivoire (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "COD",
+          "designation": "Democratic Republic of the Congo",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "DJI",
+          "designation": "Djibouti (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "EGY",
+          "designation": "Egypt (Arab Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "GNE",
+          "designation": "Equatorial Guinea (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "ERI",
+          "designation": "Eritrea",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "SWZ",
+          "designation": "Eswatini (Kingdom of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "ETH",
+          "designation": "Ethiopia (Federal Democratic Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "GAB",
+          "designation": "Gabonese Republic",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "GMB",
+          "designation": "Gambia (Republic of the)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "GHA",
+          "designation": "Ghana",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "GUI",
+          "designation": "Guinea (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "GNB",
+          "designation": "Guinea-Bissau (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "IRQ",
+          "designation": "Iraq (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "JOR",
+          "designation": "Jordan (Hashemite Kingdom of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "KEN",
+          "designation": "Kenya (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "KWT",
+          "designation": "Kuwait (State of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "LBN",
+          "designation": "Lebanon",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "LSO",
+          "designation": "Lesotho (Kingdom of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "LBR",
+          "designation": "Liberia (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "LBY",
+          "designation": "Libya (State of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "MDG",
+          "designation": "Madagascar (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "MWI",
+          "designation": "Malawi",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "MLI",
+          "designation": "Mali (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "MTN",
+          "designation": "Mauritania (Islamic Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "MAU",
+          "designation": "Mauritius (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "MRC",
+          "designation": "Morocco (Kingdom of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "MOZ",
+          "designation": "Mozambique (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "NMB",
+          "designation": "Namibia (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "NGR",
+          "designation": "Niger (Republic of the)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "NIG",
+          "designation": "Nigeria (Federal Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "OMA",
+          "designation": "Oman (Sultanate of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "QAT",
+          "designation": "Qatar (State of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "RRW",
+          "designation": "Rwanda (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "STP",
+          "designation": "Sao Tome and Principe (Democratic Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "ARS",
+          "designation": "Saudi Arabia (Kingdom of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "SEN",
+          "designation": "Senegal (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "SEY",
+          "designation": "Seychelles (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "SRL",
+          "designation": "Sierra Leone",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "SOM",
+          "designation": "Somalia (Federal Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "AFS",
+          "designation": "South Africa (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "SSD",
+          "designation": "South Sudan (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "SDN",
+          "designation": "Sudan (Republic of the)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "SYR",
+          "designation": "Syrian Arab Republic",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "TZA",
+          "designation": "Tanzania (United Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "TGO",
+          "designation": "Togolese Republic",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "TUN",
+          "designation": "Tunisia",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "UGA",
+          "designation": "Uganda (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "UAE",
+          "designation": "United Arab Emirates",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "CVA",
+          "designation": "Vatican City State",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "YEM",
+          "designation": "Yemen (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "ZMB",
+          "designation": "Zambia (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "ZWE",
+          "designation": "Zimbabwe (Republic of)",
+          "ituRadioRegion": "XR1"
+        }
+      ]
+    },
+    {
+      "code": "Americas",
+      "countries": [
+        {
+          "symbol": "ATG",
+          "designation": "Antigua and Barbuda",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "ARG",
+          "designation": "Argentine Republic",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "BAH",
+          "designation": "Bahamas (Commonwealth of the)",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "BRB",
+          "designation": "Barbados",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "BLZ",
+          "designation": "Belize",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "BOL",
+          "designation": "Bolivia (Plurinational State of)",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "B",
+          "designation": "Brazil (Federative Republic of)",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "CAN",
+          "designation": "Canada",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "CHL",
+          "designation": "Chile",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "CLM",
+          "designation": "Colombia (Republic of)",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "CTR",
+          "designation": "Costa Rica",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "CUB",
+          "designation": "Cuba",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "DMA",
+          "designation": "Dominica (Commonwealth of)",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "DOM",
+          "designation": "Dominican Republic",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "EQA",
+          "designation": "Ecuador",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "SLV",
+          "designation": "El Salvador (Republic of)",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "GRD",
+          "designation": "Grenada",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "GTM",
+          "designation": "Guatemala (Republic of)",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "GUY",
+          "designation": "Guyana",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "HTI",
+          "designation": "Haiti (Republic of)",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "HND",
+          "designation": "Honduras (Republic of)",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "JMC",
+          "designation": "Jamaica",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "MEX",
+          "designation": "Mexico",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "NCG",
+          "designation": "Nicaragua",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "PNR",
+          "designation": "Panama (Republic of)",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "PRG",
+          "designation": "Paraguay (Republic of)",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "PRU",
+          "designation": "Peru",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "KNA",
+          "designation": "Saint Kitts and Nevis (Federation of)",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "LCA",
+          "designation": "Saint Lucia",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "VCT",
+          "designation": "Saint Vincent and the Grenadines",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "SUR",
+          "designation": "Suriname (Republic of)",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "TRD",
+          "designation": "Trinidad and Tobago",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "USA",
+          "designation": "United States of America",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "URG",
+          "designation": "Uruguay (Eastern Republic of)",
+          "ituRadioRegion": "XR2"
+        },
+        {
+          "symbol": "VEN",
+          "designation": "Venezuela (Bolivarian Republic of)",
+          "ituRadioRegion": "XR2"
+        }
+      ]
+    },
+    {
+      "code": "Asia-Pacific",
+      "countries": [
+        {
+          "symbol": "AFG",
+          "designation": "Afghanistan",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "AUS",
+          "designation": "Australia",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "BGD",
+          "designation": "Bangladesh (People's Republic of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "BTN",
+          "designation": "Bhutan (Kingdom of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "BRU",
+          "designation": "Brunei Darussalam",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "CBG",
+          "designation": "Cambodia (Kingdom of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "CHN",
+          "designation": "China (People's Republic of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "KRE",
+          "designation": "Democratic People's Republic of Korea",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "FJI",
+          "designation": "Fiji (Republic of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "IND",
+          "designation": "India (Republic of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "INS",
+          "designation": "Indonesia (Republic of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "IRN",
+          "designation": "Iran (Islamic Republic of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "J",
+          "designation": "Japan",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "KIR",
+          "designation": "Kiribati (Republic of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "KOR",
+          "designation": "Korea (Republic of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "LAO",
+          "designation": "Lao People's Democratic Republic",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "MLA",
+          "designation": "Malaysia",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "MLD",
+          "designation": "Maldives (Republic of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "MHL",
+          "designation": "Marshall Islands (Republic of the)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "FSM",
+          "designation": "Micronesia (Federated States of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "MNG",
+          "designation": "Mongolia",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "BRM",
+          "designation": "Myanmar (Union of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "NRU",
+          "designation": "Nauru (Republic of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "NPL",
+          "designation": "Nepal (Federal Democratic Republic of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "NZL",
+          "designation": "New Zealand",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "PAK",
+          "designation": "Pakistan (Islamic Republic of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "PLW",
+          "designation": "Palau (Republic of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "PNG",
+          "designation": "Papua New Guinea",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "PHL",
+          "designation": "Philippines (Republic of the)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "SMO",
+          "designation": "Samoa (Independent State of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "SNG",
+          "designation": "Singapore (Republic of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "SLM",
+          "designation": "Solomon Islands",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "CLN",
+          "designation": "Sri Lanka (Democratic Socialist Republic of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "THA",
+          "designation": "Thailand",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "TLS",
+          "designation": "Timor-Leste (Democratic Republic of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "TON",
+          "designation": "Tonga (Kingdom of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "TUV",
+          "designation": "Tuvalu",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "VUT",
+          "designation": "Vanuatu (Republic of)",
+          "ituRadioRegion": "XR3"
+        },
+        {
+          "symbol": "VTN",
+          "designation": "Viet Nam (Socialist Republic of)",
+          "ituRadioRegion": "XR3"
+        }
+      ]
+    },
+    {
+      "code": "CIS",
+      "countries": [
+        {
+          "symbol": "ARM",
+          "designation": "Armenia (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "AZE",
+          "designation": "Azerbaijan (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "BLR",
+          "designation": "Belarus (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "GEO",
+          "designation": "Georgia",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "KAZ",
+          "designation": "Kazakhstan (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "KGZ",
+          "designation": "Kyrgyz Republic",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "MDA",
+          "designation": "Moldova (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "RUS",
+          "designation": "Russian Federation",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "TJK",
+          "designation": "Tajikistan (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "TKM",
+          "designation": "Turkmenistan",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "UKR",
+          "designation": "Ukraine",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "UZB",
+          "designation": "Uzbekistan (Republic of)",
+          "ituRadioRegion": "XR1"
+        }
+      ]
+    },
+    {
+      "code": "Europe",
+      "countries": [
+        {
+          "symbol": "ALB",
+          "designation": "Albania (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "AND",
+          "designation": "Andorra (Principality of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "AUT",
+          "designation": "Austria",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "BEL",
+          "designation": "Belgium",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "BIH",
+          "designation": "Bosnia and Herzegovina",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "BUL",
+          "designation": "Bulgaria (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "HRV",
+          "designation": "Croatia (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "CYP",
+          "designation": "Cyprus (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "CZE",
+          "designation": "Czech Republic",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "DNK",
+          "designation": "Denmark",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "EST",
+          "designation": "Estonia (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "FIN",
+          "designation": "Finland",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "F",
+          "designation": "France",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "D",
+          "designation": "Germany (Federal Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "GRC",
+          "designation": "Greece",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "HNG",
+          "designation": "Hungary",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "ISL",
+          "designation": "Iceland",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "IRL",
+          "designation": "Ireland",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "ISR",
+          "designation": "Israel (State of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "I",
+          "designation": "Italy",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "LVA",
+          "designation": "Latvia (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "LIE",
+          "designation": "Liechtenstein (Principality of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "LTU",
+          "designation": "Lithuania (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "LUX",
+          "designation": "Luxembourg",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "MLT",
+          "designation": "Malta",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "MCO",
+          "designation": "Monaco (Principality of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "MNE",
+          "designation": "Montenegro",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "HOL",
+          "designation": "Netherlands (Kingdom of the)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "MKD",
+          "designation": "North Macedonia (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "NOR",
+          "designation": "Norway",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "POL",
+          "designation": "Poland (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "POR",
+          "designation": "Portugal",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "TUR",
+          "designation": "Republic of Türkiye",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "ROU",
+          "designation": "Romania",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "SMR",
+          "designation": "San Marino (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "SRB",
+          "designation": "Serbia (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "SVK",
+          "designation": "Slovak Republic",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "SVN",
+          "designation": "Slovenia (Republic of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "E",
+          "designation": "Spain",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "S",
+          "designation": "Sweden",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "SUI",
+          "designation": "Switzerland (Confederation of)",
+          "ituRadioRegion": "XR1"
+        },
+        {
+          "symbol": "G",
+          "designation": "United Kingdom of Great Britain and Northern Ireland",
+          "ituRadioRegion": "XR1"
+        }
+      ]
+    }
+  ]
+}

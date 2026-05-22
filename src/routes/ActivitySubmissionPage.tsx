@@ -1,9 +1,16 @@
+import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
+import { createActivitySubmission } from '../api/activitySubmissions';
 import AppFooter from '../components/AppFooter';
 import { useData } from '../context/DataContext';
+import {
+  getAdministrationRegionCodes,
+  getCountriesForRegion,
+  isOfficialCountryForRegion,
+} from '../utils/administrations';
 
-type SubmissionStatus = 'idle' | 'submitted';
+type SubmissionStatus = 'idle' | 'submitting' | 'submitted' | 'error';
 
 type ActivitySubmissionForm = {
   region: string;
@@ -39,8 +46,17 @@ const initialForm: ActivitySubmissionForm = {
   consent: false,
 };
 
-const inputClass =
-  'w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm transition-colors placeholder:text-slate-400 focus:border-[#0539E3] focus:outline-none focus:ring-1 focus:ring-[#0539E3]';
+const fieldBaseClass =
+  'w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm transition-colors focus:border-[#0539E3] focus:outline-none focus:ring-1 focus:ring-[#0539E3]';
+
+const inputClass = `${fieldBaseClass} text-slate-800 placeholder:text-slate-400`;
+
+const selectOptionClass = 'text-slate-800';
+
+function selectClass(value: string, disabled = false) {
+  const tone = value && !disabled ? 'text-slate-800' : 'text-slate-400';
+  return `mt-1.5 ${fieldBaseClass} ${tone}`;
+}
 
 const labelClass = 'text-sm font-medium text-slate-700';
 
@@ -52,11 +68,33 @@ function unique(values: string[]) {
   return [...new Set(values.map(value => value.trim()).filter(Boolean))].sort();
 }
 
+function toApiInput(form: ActivitySubmissionForm) {
+  return {
+    region: form.region.trim(),
+    country: form.country.trim(),
+    activity: form.activity.trim(),
+    description: form.description.trim(),
+    status: form.status.trim(),
+    focal_point_name: form.focalPointName.trim() || undefined,
+    focal_point_email: form.focalPointEmail.trim() || undefined,
+    location: form.location.trim() || undefined,
+    building_block: form.buildingBlock.trim() || undefined,
+    use_case: form.useCase.trim() || undefined,
+    budget: form.budget.trim() || undefined,
+    timeline: form.timeline.trim() || undefined,
+    video_url: form.videoUrl.trim() || undefined,
+    image_keys: [] as string[],
+  };
+}
+
 export default function ActivitySubmissionPage() {
+  const { user } = useAuthenticator(context => [context.user]);
   const { sheets } = useData();
   const [form, setForm] = useState<ActivitySubmissionForm>(initialForm);
   const [images, setImages] = useState<File[]>([]);
   const [status, setStatus] = useState<SubmissionStatus>('idle');
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [lastSubmissionId, setLastSubmissionId] = useState<string | null>(null);
   const [showErrors, setShowErrors] = useState(false);
 
   const globalViewSheet = useMemo(() => {
@@ -66,8 +104,14 @@ export default function ActivitySubmissionPage() {
     return key ? sheets[key] : null;
   }, [sheets]);
 
+  const officialRegionCodes = useMemo(() => getAdministrationRegionCodes(), []);
+
+  const countriesForRegion = useMemo(
+    () => getCountriesForRegion(form.region),
+    [form.region],
+  );
+
   const dropdownOptions = useMemo(() => ({
-    regions: unique(globalViewSheet?.rows.map(row => row['Region'] || '') ?? []),
     statuses: unique(globalViewSheet?.rows.map(row => row['Status'] || '') ?? []),
   }), [globalViewSheet]);
 
@@ -76,6 +120,9 @@ export default function ActivitySubmissionPage() {
 
     if (!required(form.region)) nextErrors.region = 'Region is required.';
     if (!required(form.country)) nextErrors.country = 'Country is required.';
+    if (form.region && form.country && !isOfficialCountryForRegion(form.region, form.country)) {
+      nextErrors.country = 'Select a country from the official list for this region.';
+    }
     if (!required(form.activity)) nextErrors.activity = 'Activity is required.';
     if (!required(form.description)) nextErrors.description = 'Description is required.';
     if (!required(form.status)) nextErrors.status = 'Status is required.';
@@ -94,23 +141,46 @@ export default function ActivitySubmissionPage() {
   }, [form, images]);
 
   const hasErrors = Object.keys(errors).length > 0;
+  const isSubmitting = status === 'submitting';
 
   const updateField = <Key extends keyof ActivitySubmissionForm>(
     key: Key,
     value: ActivitySubmissionForm[Key],
   ) => {
-    setForm(current => ({ ...current, [key]: value }));
-    setStatus('idle');
+    setForm(current => {
+      const next = { ...current, [key]: value };
+      if (key === 'region' && value !== current.region) {
+        next.country = '';
+      }
+      return next;
+    });
+    if (status !== 'submitting') {
+      setStatus('idle');
+      setSubmitError(null);
+    }
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setShowErrors(true);
+    setSubmitError(null);
 
-    if (hasErrors) return;
+    if (hasErrors || isSubmitting) return;
 
-    // This first version captures the activity information locally only. S3/API persistence will be wired later.
-    setStatus('submitted');
+    setStatus('submitting');
+
+    try {
+      const record = await createActivitySubmission(toApiInput(form));
+      setLastSubmissionId(record.submission_id);
+      setStatus('submitted');
+      setForm(initialForm);
+      setImages([]);
+      setShowErrors(false);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Submission failed. Please try again.';
+      setSubmitError(message);
+      setStatus('error');
+    }
   };
 
   const resetForm = () => {
@@ -118,7 +188,12 @@ export default function ActivitySubmissionPage() {
     setImages([]);
     setShowErrors(false);
     setStatus('idle');
+    setSubmitError(null);
+    setLastSubmissionId(null);
   };
+
+  const submitterLabel =
+    user?.signInDetails?.loginId ?? user?.username ?? 'Signed-in user';
 
   return (
     <div className="flex min-h-full flex-col bg-[#f8fafc]">
@@ -132,7 +207,7 @@ export default function ActivitySubmissionPage() {
           </h1>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-500">
             Share planned activity details before an event or upload a summary after it has taken place.
-            Submitted content is collected for internal review before it is merged into the master dataset.
+            Submitted content is saved for internal review before it is merged into the master dataset.
           </p>
         </div>
 
@@ -145,14 +220,17 @@ export default function ActivitySubmissionPage() {
                 </label>
                 <select
                   id="region"
-                  className={`mt-1.5 ${inputClass}`}
+                  className={selectClass(form.region, isSubmitting)}
                   value={form.region}
                   onChange={event => updateField('region', event.target.value)}
+                  disabled={isSubmitting}
                 >
-                  <option value="">Select region</option>
-                  {dropdownOptions.regions.map(region => (
-                    <option key={region} value={region}>
-                      {region}
+                  <option value="" className="text-slate-400">
+                    Select region
+                  </option>
+                  {officialRegionCodes.map(regionCode => (
+                    <option key={regionCode} value={regionCode} className={selectOptionClass}>
+                      {regionCode}
                     </option>
                   ))}
                 </select>
@@ -165,13 +243,26 @@ export default function ActivitySubmissionPage() {
                 <label className={labelClass} htmlFor="country">
                   Country <span className="text-red-500">*</span>
                 </label>
-                <input
+                <select
                   id="country"
-                  className={`mt-1.5 ${inputClass}`}
+                  className={selectClass(form.country, isSubmitting || !form.region)}
                   value={form.country}
                   onChange={event => updateField('country', event.target.value)}
-                  placeholder="Country"
-                />
+                  disabled={isSubmitting || !form.region}
+                >
+                  <option value="" className="text-slate-400">
+                    {form.region ? 'Select country' : 'Select a country'}
+                  </option>
+                  {countriesForRegion.map(country => (
+                    <option
+                      key={country.symbol}
+                      value={country.designation}
+                      className={selectOptionClass}
+                    >
+                      {country.designation}
+                    </option>
+                  ))}
+                </select>
                 {showErrors && errors.country && <p className="mt-1 text-xs text-red-600">{errors.country}</p>}
               </div>
 
@@ -185,6 +276,7 @@ export default function ActivitySubmissionPage() {
                   value={form.activity}
                   onChange={event => updateField('activity', event.target.value)}
                   placeholder="e.g. Digital public infrastructure workshop"
+                  disabled={isSubmitting}
                 />
                 {showErrors && errors.activity && (
                   <p className="mt-1 text-xs text-red-600">{errors.activity}</p>
@@ -201,6 +293,7 @@ export default function ActivitySubmissionPage() {
                   value={form.description}
                   onChange={event => updateField('description', event.target.value)}
                   placeholder="Describe the activity, partners, goals, and expected outcomes."
+                  disabled={isSubmitting}
                 />
                 {showErrors && errors.description && (
                   <p className="mt-1 text-xs text-red-600">{errors.description}</p>
@@ -213,13 +306,16 @@ export default function ActivitySubmissionPage() {
                 </label>
                 <select
                   id="status"
-                  className={`mt-1.5 ${inputClass}`}
+                  className={selectClass(form.status, isSubmitting)}
                   value={form.status}
                   onChange={event => updateField('status', event.target.value)}
+                  disabled={isSubmitting}
                 >
-                  <option value="">Select status</option>
+                  <option value="" className="text-slate-400">
+                    Select status
+                  </option>
                   {dropdownOptions.statuses.map(statusOption => (
-                    <option key={statusOption} value={statusOption}>
+                    <option key={statusOption} value={statusOption} className={selectOptionClass}>
                       {statusOption}
                     </option>
                   ))}
@@ -239,6 +335,7 @@ export default function ActivitySubmissionPage() {
                   value={form.location}
                   onChange={event => updateField('location', event.target.value)}
                   placeholder="City or implementation location"
+                  disabled={isSubmitting}
                 />
               </div>
 
@@ -253,6 +350,7 @@ export default function ActivitySubmissionPage() {
                     value={form.focalPointName}
                     onChange={event => updateField('focalPointName', event.target.value)}
                     placeholder="Full name"
+                    disabled={isSubmitting}
                   />
                   {showErrors && errors.focalPointName && (
                     <p className="mt-1 text-xs text-red-600">{errors.focalPointName}</p>
@@ -269,7 +367,8 @@ export default function ActivitySubmissionPage() {
                     className={`mt-1.5 ${inputClass}`}
                     value={form.focalPointEmail}
                     onChange={event => updateField('focalPointEmail', event.target.value)}
-                    placeholder="focal.point@example.org"
+                    placeholder="focal.point@itu.int"
+                    disabled={isSubmitting}
                   />
                   {showErrors && errors.focalPointEmail && (
                     <p className="mt-1 text-xs text-red-600">{errors.focalPointEmail}</p>
@@ -287,6 +386,7 @@ export default function ActivitySubmissionPage() {
                   value={form.buildingBlock}
                   onChange={event => updateField('buildingBlock', event.target.value)}
                   placeholder="Building block"
+                  disabled={isSubmitting}
                 />
               </div>
 
@@ -300,6 +400,7 @@ export default function ActivitySubmissionPage() {
                   value={form.useCase}
                   onChange={event => updateField('useCase', event.target.value)}
                   placeholder="Use case"
+                  disabled={isSubmitting}
                 />
               </div>
 
@@ -313,6 +414,7 @@ export default function ActivitySubmissionPage() {
                   value={form.budget}
                   onChange={event => updateField('budget', event.target.value)}
                   placeholder="Budget"
+                  disabled={isSubmitting}
                 />
               </div>
 
@@ -326,6 +428,7 @@ export default function ActivitySubmissionPage() {
                   value={form.timeline}
                   onChange={event => updateField('timeline', event.target.value)}
                   placeholder="e.g. Q3 2026"
+                  disabled={isSubmitting}
                 />
               </div>
 
@@ -340,9 +443,10 @@ export default function ActivitySubmissionPage() {
                   multiple
                   className="mt-1.5 block w-full rounded-lg border border-dashed border-slate-300 bg-slate-50 px-3 py-3 text-sm text-slate-600 file:mr-4 file:rounded-md file:border-0 file:bg-[#0539E3] file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-white hover:bg-slate-100"
                   onChange={event => setImages(Array.from(event.target.files ?? []))}
+                  disabled={isSubmitting}
                 />
                 <p className="mt-1 text-xs text-slate-400">
-                  Selected images are not uploaded yet in this UI-only version.
+                  Image upload to S3 is not enabled yet. Metadata is still saved without image keys.
                 </p>
                 {images.length > 0 && (
                   <ul className="mt-2 space-y-1 text-xs text-slate-500">
@@ -367,6 +471,7 @@ export default function ActivitySubmissionPage() {
                   value={form.videoUrl}
                   onChange={event => updateField('videoUrl', event.target.value)}
                   placeholder="https://..."
+                  disabled={isSubmitting}
                 />
               </div>
             </div>
@@ -377,6 +482,7 @@ export default function ActivitySubmissionPage() {
                 checked={form.consent}
                 onChange={event => updateField('consent', event.target.checked)}
                 className="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#0539E3] focus:ring-[#0539E3]"
+                disabled={isSubmitting}
               />
               <span>
                 I confirm that the submitted information can be reviewed by the GovStack team and
@@ -390,21 +496,26 @@ export default function ActivitySubmissionPage() {
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
               <button
                 type="submit"
-                className="inline-flex justify-center rounded-lg bg-[#0539E3] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#0432c4]"
+                disabled={isSubmitting}
+                className="inline-flex justify-center rounded-lg bg-[#0539E3] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#0432c4] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Submit information
+                {isSubmitting ? 'Submitting…' : 'Submit information'}
               </button>
               <button
                 type="button"
                 onClick={resetForm}
-                className="inline-flex justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50"
+                disabled={isSubmitting}
+                className="inline-flex justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 Clear form
               </button>
-              {status === 'submitted' && (
+              {status === 'submitted' && lastSubmissionId && (
                 <p className="text-sm font-medium text-green-700">
-                  Activity information captured locally. Storage integration can be wired next.
+                  Saved to GovStack submissions database.
                 </p>
+              )}
+              {status === 'error' && submitError && (
+                <p className="text-sm font-medium text-red-600">{submitError}</p>
               )}
             </div>
           </form>
@@ -412,19 +523,21 @@ export default function ActivitySubmissionPage() {
           <aside className="h-fit rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
             <h2 className="text-base font-semibold text-slate-900">Submission status</h2>
             <p className="mt-2 text-sm leading-relaxed text-slate-500">
-              This first version prepares the activity information form and validation flow. It does not yet write
-              to S3, DynamoDB, or the master Excel file.
+              Submissions are stored in DynamoDB via AppSync for internal review. Region and country use the official
+              ITU administrations list mapped to the same five regions as the Global View map.
             </p>
 
             <div className="mt-5 space-y-3 text-sm">
               <div className="rounded-lg bg-slate-50 p-3">
                 <p className="font-medium text-slate-700">Current scope</p>
-                <p className="mt-1 text-slate-500">Authenticated users only, images as files, video as link.</p>
+                <p className="mt-1 text-slate-500">
+                  Authenticated users only. Submitter: {submitterLabel}. Images are not uploaded yet.
+                </p>
               </div>
               <div className="rounded-lg bg-[#eef3ff] p-3">
                 <p className="font-medium text-slate-800">Next integration</p>
                 <p className="mt-1 text-slate-600">
-                  Connect image uploads to <code>govstack-submissions/</code> and persist metadata for validation.
+                  Connect image uploads to <code>govstack-submissions/</code> and add an admin review list.
                 </p>
               </div>
             </div>

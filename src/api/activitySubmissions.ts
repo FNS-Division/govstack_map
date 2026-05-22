@@ -17,6 +17,8 @@ export type CreateActivitySubmissionInput = {
   image_keys?: string[];
 };
 
+export type ReviewSubmissionStatus = 'pending' | 'validated' | 'rejected';
+
 export type ActivitySubmissionRecord = {
   submission_id: string;
   submission_status?: string | null;
@@ -83,6 +85,14 @@ const listActivitySubmissionsQuery = /* GraphQL */ `
         ${submissionFields}
       }
       nextToken
+    }
+  }
+`;
+
+const updateActivitySubmissionMutation = /* GraphQL */ `
+  mutation UpdateGovstackActivitySubmissions($input: UpdateGovstackActivitySubmissionsInput!) {
+    updateGovstackActivitySubmissions(input: $input) {
+      ${submissionFields}
     }
   }
 `;
@@ -169,4 +179,30 @@ export async function listAllActivitySubmissions(): Promise<ActivitySubmissionRe
     const bTime = b.created_at ?? '';
     return bTime.localeCompare(aTime);
   });
+}
+
+/** Sets review status (validated / rejected / pending). Requires AppSync update resolver. */
+export async function updateActivitySubmissionReviewStatus(
+  submissionId: string,
+  submissionStatus: ReviewSubmissionStatus,
+): Promise<ActivitySubmissionRecord> {
+  const data = await runGraphqlQuery<{
+    updateGovstackActivitySubmissions?: ActivitySubmissionRecord | null;
+  }>('updateActivitySubmissionReviewStatus', {
+    query: updateActivitySubmissionMutation,
+    variables: {
+      input: {
+        submission_id: submissionId,
+        submission_status: submissionStatus,
+      },
+    },
+    authMode: 'userPool',
+  });
+
+  const record = data.updateGovstackActivitySubmissions;
+  if (!record?.submission_id) {
+    throw new Error('Submission was not updated.');
+  }
+
+  return record;
 }

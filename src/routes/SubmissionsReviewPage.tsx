@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   listAllActivitySubmissions,
+  updateActivitySubmissionReviewStatus,
   type ActivitySubmissionRecord,
+  type ReviewSubmissionStatus,
 } from '../api/activitySubmissions';
 import AppFooter from '../components/AppFooter';
 import { PageSpinner } from '../components/directory/DirectoryPageLayout';
@@ -15,9 +17,15 @@ const STATUS_FILTERS: { id: StatusFilter; label: string }[] = [
   { id: 'rejected', label: 'Rejected' },
 ];
 
-function statusBadgeClass(status: string | null | undefined) {
+function normalizeReviewStatus(status: string | null | undefined): string {
   const value = (status ?? 'pending').toLowerCase();
-  if (value === 'validated' || value === 'approved') {
+  if (value === 'approved') return 'validated';
+  return value;
+}
+
+function statusBadgeClass(status: string | null | undefined) {
+  const value = normalizeReviewStatus(status);
+  if (value === 'validated') {
     return 'bg-emerald-50 text-emerald-800 ring-emerald-600/20';
   }
   if (value === 'rejected') {
@@ -47,12 +55,19 @@ function SubmissionCard({
   record,
   expanded,
   onToggle,
+  onReviewStatusChange,
+  isUpdating,
+  actionError,
 }: {
   record: ActivitySubmissionRecord;
   expanded: boolean;
   onToggle: () => void;
+  onReviewStatusChange: (submissionId: string, status: ReviewSubmissionStatus) => void;
+  isUpdating: boolean;
+  actionError: string | null;
 }) {
-  const reviewStatus = record.submission_status ?? 'pending';
+  const reviewStatus = normalizeReviewStatus(record.submission_status);
+  const isPending = reviewStatus === 'pending';
 
   return (
     <article className="rounded-xl border border-slate-200 bg-white shadow-sm">
@@ -114,6 +129,50 @@ function SubmissionCard({
               Images: {record.image_keys.join(', ')}
             </p>
           )}
+
+          <div className="mt-5 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center">
+            {isPending ? (
+              <>
+                <button
+                  type="button"
+                  disabled={isUpdating}
+                  onClick={event => {
+                    event.stopPropagation();
+                    onReviewStatusChange(record.submission_id, 'validated');
+                  }}
+                  className="inline-flex justify-center rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {isUpdating ? 'Updating…' : 'Validate'}
+                </button>
+                <button
+                  type="button"
+                  disabled={isUpdating}
+                  onClick={event => {
+                    event.stopPropagation();
+                    onReviewStatusChange(record.submission_id, 'rejected');
+                  }}
+                  className="inline-flex justify-center rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-semibold text-red-700 shadow-sm transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  Reject
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                disabled={isUpdating}
+                onClick={event => {
+                  event.stopPropagation();
+                  onReviewStatusChange(record.submission_id, 'pending');
+                }}
+                className="inline-flex justify-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isUpdating ? 'Updating…' : 'Mark as pending'}
+              </button>
+            )}
+            {actionError && (
+              <p className="text-sm text-red-600">{actionError}</p>
+            )}
+          </div>
         </div>
       )}
     </article>
@@ -125,8 +184,10 @@ export default function SubmissionsReviewPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('pending');
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const loadSubmissions = useCallback(async () => {
     setLoading(true);
@@ -147,10 +208,31 @@ export default function SubmissionsReviewPage() {
     void loadSubmissions();
   }, [loadSubmissions]);
 
+  const handleReviewStatusChange = useCallback(
+    async (submissionId: string, status: ReviewSubmissionStatus) => {
+      setUpdatingId(submissionId);
+      setActionError(null);
+      try {
+        const updated = await updateActivitySubmissionReviewStatus(submissionId, status);
+        setRecords(current =>
+          current.map(record =>
+            record.submission_id === submissionId ? { ...record, ...updated } : record,
+          ),
+        );
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Failed to update submission.';
+        setActionError(message);
+      } finally {
+        setUpdatingId(null);
+      }
+    },
+    [],
+  );
+
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
     return records.filter(record => {
-      const reviewStatus = (record.submission_status ?? 'pending').toLowerCase();
+      const reviewStatus = normalizeReviewStatus(record.submission_status);
       if (statusFilter !== 'all' && reviewStatus !== statusFilter) return false;
       if (!query) return true;
       const haystack = [
@@ -171,9 +253,9 @@ export default function SubmissionsReviewPage() {
   const counts = useMemo(() => {
     const tally = { all: records.length, pending: 0, validated: 0, rejected: 0 };
     for (const record of records) {
-      const status = (record.submission_status ?? 'pending').toLowerCase();
+      const status = normalizeReviewStatus(record.submission_status);
       if (status === 'pending') tally.pending += 1;
-      else if (status === 'validated' || status === 'approved') tally.validated += 1;
+      else if (status === 'validated') tally.validated += 1;
       else if (status === 'rejected') tally.rejected += 1;
     }
     return tally;
@@ -191,7 +273,7 @@ export default function SubmissionsReviewPage() {
               Activity submissions
             </h1>
             <p className="mt-2 max-w-2xl text-sm text-slate-500">
-              Review activity submissions stored in DynamoDB. Filter by status, search, and expand a row for full details.
+              Review submissions from DynamoDB. Expand a row to validate or reject pending items.
             </p>
           </div>
           <button
@@ -210,10 +292,6 @@ export default function SubmissionsReviewPage() {
           <div className="rounded-xl border border-red-200 bg-red-50 p-5 text-sm text-red-800">
             <p className="font-semibold">Could not load submissions</p>
             <p className="mt-2">{error}</p>
-            <p className="mt-3 text-red-700/90">
-              If the create mutation works but this page fails, attach a{' '}
-              <strong>Query.listGovstackActivitySubmissions</strong> resolver in AppSync (DynamoDB scan).
-            </p>
             <button
               type="button"
               onClick={() => void loadSubmissions()}
@@ -271,6 +349,9 @@ export default function SubmissionsReviewPage() {
                           current === record.submission_id ? null : record.submission_id,
                         )
                       }
+                      onReviewStatusChange={(id, status) => void handleReviewStatusChange(id, status)}
+                      isUpdating={updatingId === record.submission_id}
+                      actionError={expandedId === record.submission_id ? actionError : null}
                     />
                   </li>
                 ))}

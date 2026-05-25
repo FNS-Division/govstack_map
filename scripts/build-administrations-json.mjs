@@ -1,6 +1,6 @@
 /**
  * Regenerate src/data/administrations.json from the ITU administrations export.
- * Maps ITU radio regions (XR1–XR3) to GovStack five regions (Global View).
+ * Maps ITU radio regions (XR1–XR3) to ITU-D six economy regions.
  *
  * Usage:
  *   node scripts/build-administrations-json.mjs /path/to/administrations.xlsx
@@ -9,7 +9,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import XLSX from 'xlsx';
-import { GOVSTACK_REGIONS, mapSymbolToGovstackRegion } from './itu-symbol-to-govstack-region.mjs';
+import {
+  GOVSTACK_REGIONS,
+  mapSymbolToGovstackRegion,
+  REGION_SUPPLEMENTS,
+} from './itu-symbol-to-govstack-region.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const inputPath = process.argv[2];
@@ -41,16 +45,17 @@ for (const row of rows) {
   });
 }
 
-const regions = GOVSTACK_REGIONS.map(code => ({
-  code,
-  countries: byGovstackRegion
-    .get(code)
-    .sort((a, b) => a.designation.localeCompare(b.designation)),
-}));
+const regions = GOVSTACK_REGIONS.map(code => {
+  const supplements = REGION_SUPPLEMENTS[code] ?? [];
+  const countries = [...byGovstackRegion.get(code), ...supplements].sort((a, b) =>
+    a.designation.localeCompare(b.designation),
+  );
+  return { code, countries };
+});
 
 const payload = {
   source: path.basename(inputPath),
-  regionModel: 'govstack-five-regions',
+  regionModel: 'itu-d-six-regions',
   updatedAt: new Date().toISOString().slice(0, 10),
   regions,
 };

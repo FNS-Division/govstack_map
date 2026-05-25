@@ -6,11 +6,12 @@ export type AdministrationCountry = {
   ituRadioRegion?: string;
 };
 
-/** Matches Global View Excel / map filters. */
+/** ITU-D economy regions (matches Global View / ITU statistics). */
 export const GOVSTACK_REGION_ORDER = [
   'Africa',
   'Americas',
-  'Asia-Pacific',
+  'Arab States',
+  'Asia and the Pacific',
   'CIS',
   'Europe',
 ] as const;

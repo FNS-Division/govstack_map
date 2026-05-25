@@ -524,7 +524,7 @@ export default function ActivitySubmissionPage() {
             <h2 className="text-base font-semibold text-slate-900">Submission status</h2>
             <p className="mt-2 text-sm leading-relaxed text-slate-500">
               Submissions are stored in DynamoDB via AppSync for internal review. Region and country use the official
-              ITU administrations list mapped to the same five regions as the Global View map.
+              ITU administrations list mapped to ITU-D economy regions (Africa, Americas, Arab States, Asia and the Pacific, CIS, Europe).
             </p>
 
             <div className="mt-5 space-y-3 text-sm">

@@ -89,7 +89,9 @@ export default function ExpertsDirectoryPage() {
 
   const experts = useMemo(() => {
     if (!sheetKey) return [];
-    return sheets[sheetKey].rows.map((row, i) => mapRowToExpert(row, i));
+    return sheets[sheetKey].rows
+      .map((row, i) => mapRowToExpert(row, i))
+      .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
   }, [sheetKey, sheets]);
 
   const areaOptions = useMemo(() => {

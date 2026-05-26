@@ -6,6 +6,7 @@ import GlobalMap from './routes/GlobalMap';
 import ExpertsDirectoryPage from './routes/ExpertsDirectoryPage';
 import AssetsDirectoryPage from './routes/AssetsDirectoryPage';
 import ActivitySubmissionPage from './routes/ActivitySubmissionPage';
+import AdminRoute from './components/AdminRoute';
 import SubmissionsReviewPage from './routes/SubmissionsReviewPage';
 
 export default function App() {
@@ -19,7 +20,14 @@ export default function App() {
               <Route path="/experts" element={<ExpertsDirectoryPage />} />
               <Route path="/assets" element={<AssetsDirectoryPage />} />
               <Route path="/submit-activity" element={<ActivitySubmissionPage />} />
-              <Route path="/admin/submissions" element={<SubmissionsReviewPage />} />
+              <Route
+                path="/admin/submissions"
+                element={
+                  <AdminRoute>
+                    <SubmissionsReviewPage />
+                  </AdminRoute>
+                }
+              />
             </Route>
           </Routes>
         </BrowserRouter>

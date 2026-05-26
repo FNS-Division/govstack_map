@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
+  ADMIN_REQUIRED_MESSAGE,
+  isGraphqlUnauthorizedError,
   listAllActivitySubmissions,
   updateActivitySubmissionReviewStatus,
   type ActivitySubmissionRecord,
@@ -7,6 +9,7 @@ import {
 } from '../api/activitySubmissions';
 import AppFooter from '../components/AppFooter';
 import { PageSpinner } from '../components/directory/DirectoryPageLayout';
+import { useIsAdmin } from '../utils/authRoles';
 
 type StatusFilter = 'all' | 'pending' | 'validated' | 'rejected';
 
@@ -180,6 +183,7 @@ function SubmissionCard({
 }
 
 export default function SubmissionsReviewPage() {
+  const { isAdmin, isLoading: authLoading } = useIsAdmin();
   const [records, setRecords] = useState<ActivitySubmissionRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -196,7 +200,11 @@ export default function SubmissionsReviewPage() {
       const items = await listAllActivitySubmissions();
       setRecords(items);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to load submissions.';
+      const message = isGraphqlUnauthorizedError(err)
+        ? ADMIN_REQUIRED_MESSAGE
+        : err instanceof Error
+          ? err.message
+          : 'Failed to load submissions.';
       setError(message);
       setRecords([]);
     } finally {
@@ -205,8 +213,16 @@ export default function SubmissionsReviewPage() {
   }, []);
 
   useEffect(() => {
+    if (authLoading || !isAdmin) {
+      if (!authLoading && !isAdmin) {
+        setLoading(false);
+        setError(null);
+        setRecords([]);
+      }
+      return;
+    }
     void loadSubmissions();
-  }, [loadSubmissions]);
+  }, [loadSubmissions, authLoading, isAdmin]);
 
   const handleReviewStatusChange = useCallback(
     async (submissionId: string, status: ReviewSubmissionStatus) => {
@@ -220,7 +236,11 @@ export default function SubmissionsReviewPage() {
           ),
         );
       } catch (err) {
-        const message = err instanceof Error ? err.message : 'Failed to update submission.';
+        const message = isGraphqlUnauthorizedError(err)
+          ? ADMIN_REQUIRED_MESSAGE
+          : err instanceof Error
+            ? err.message
+            : 'Failed to update submission.';
         setActionError(message);
       } finally {
         setUpdatingId(null);

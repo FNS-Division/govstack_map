@@ -120,3 +120,9 @@ The app looks for sheets by keyword (case-insensitive):
 | Input Sheet | `input` |
 
 If your sheet names change, update the keyword matches in `src/routes/GlobalMap.tsx` and `src/routes/SheetPage.tsx`.
+
+## Admin review access (Cognito + AppSync)
+
+- **Cognito:** Create group `admins` and add reviewer users manually — see [docs/COGNITO_ADMIN_GROUP.md](docs/COGNITO_ADMIN_GROUP.md).
+- **AppSync:** Restrict `list` / `update` submission APIs to the `admins` group — see [docs/APPSYNC_ADMIN_AUTH.md](docs/APPSYNC_ADMIN_AUTH.md).
+- **Frontend:** Review nav and `/admin/submissions` are shown only when the signed-in user’s ID token includes `cognito:groups: ["admins"]` (re-login after joining the group).

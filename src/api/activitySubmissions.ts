@@ -99,6 +99,24 @@ const updateActivitySubmissionMutation = /* GraphQL */ `
 
 const client = generateClient();
 
+export const ADMIN_REQUIRED_MESSAGE =
+  'Administrator access required. Your account must be in the Cognito group "admins".';
+
+export function isGraphqlUnauthorizedError(err: unknown): boolean {
+  const message = err instanceof Error ? err.message : String(err);
+  return /not authorized|unauthorized|unauthorised/i.test(message);
+}
+
+function formatGraphqlError(err: unknown, label: string): Error {
+  if (isGraphqlUnauthorizedError(err)) {
+    return new Error(ADMIN_REQUIRED_MESSAGE);
+  }
+  if (err instanceof Error) {
+    return err;
+  }
+  return new Error(`Failed ${label}.`);
+}
+
 function assertGraphqlData<T>(
   response: { data?: T; errors?: { message: string }[] },
   label: string,
@@ -113,11 +131,15 @@ function assertGraphqlData<T>(
 }
 
 async function runGraphqlQuery<TData>(label: string, request: Parameters<typeof client.graphql>[0]) {
-  const response = await client.graphql(request);
-  if (!('data' in response)) {
-    throw new Error(`Unexpected GraphQL response for ${label}.`);
+  try {
+    const response = await client.graphql(request);
+    if (!('data' in response)) {
+      throw new Error(`Unexpected GraphQL response for ${label}.`);
+    }
+    return assertGraphqlData<TData>(response, label);
+  } catch (err) {
+    throw formatGraphqlError(err, label);
   }
-  return assertGraphqlData<TData>(response, label);
 }
 
 export async function createActivitySubmission(
@@ -140,7 +162,7 @@ export async function createActivitySubmission(
   return record;
 }
 
-/** Fetches one page of submissions from AppSync. */
+/** Admin only — requires Cognito group `admins` and matching AppSync resolver rules. */
 export async function listActivitySubmissionsPage(options?: {
   limit?: number;
   nextToken?: string | null;
@@ -163,7 +185,7 @@ export async function listActivitySubmissionsPage(options?: {
   };
 }
 
-/** Loads all submission pages (for admin review). */
+/** Admin only — loads all submission pages for the review UI. */
 export async function listAllActivitySubmissions(): Promise<ActivitySubmissionRecord[]> {
   const all: ActivitySubmissionRecord[] = [];
   let nextToken: string | null = null;
@@ -181,7 +203,7 @@ export async function listAllActivitySubmissions(): Promise<ActivitySubmissionRe
   });
 }
 
-/** Sets review status (validated / rejected / pending). Requires AppSync update resolver. */
+/** Admin only — sets review status (validated / rejected / pending). */
 export async function updateActivitySubmissionReviewStatus(
   submissionId: string,
   submissionStatus: ReviewSubmissionStatus,

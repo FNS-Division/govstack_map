@@ -2,8 +2,9 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import GovStackLogo from './GovStackLogo';
+import { useIsAdmin } from '../utils/authRoles';
 
-const navItems = [
+const publicNavItems = [
   {
     to: '/',
     label: 'Global Map',
@@ -40,21 +41,24 @@ const navItems = [
       </svg>
     ),
   },
-  {
-    to: '/admin/submissions',
-    label: 'Review',
-    icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-      </svg>
-    ),
-  },
 ];
+
+const adminNavItem = {
+  to: '/admin/submissions',
+  label: 'Review',
+  icon: (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+    </svg>
+  ),
+};
 
 export default function Layout() {
   const location = useLocation();
   const isMap = location.pathname === '/';
   const { signOut, user } = useAuthenticator(context => [context.signOut, context.user]);
+  const { isAdmin } = useIsAdmin();
+  const navItems = isAdmin ? [...publicNavItems, adminNavItem] : publicNavItems;
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const username = user?.signInDetails?.loginId || user?.username || 'User';

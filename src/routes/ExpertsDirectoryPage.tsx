@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useData } from '../context/DataContext';
 import DirectoryPageLayout, { ResultCount } from '../components/directory/DirectoryPageLayout';
-import FilterPanel, { FilterField, inputClass } from '../components/directory/FilterPanel';
+import FilterPanel, { SearchInput, inputClass } from '../components/directory/FilterPanel';
+import { matchesQuery } from '../utils/listSearch';
 import {
   avatarClass,
   expertMetaRows,
@@ -82,7 +83,6 @@ function ExpertCard({ expert }: { expert: ExpertRecord }) {
 export default function ExpertsDirectoryPage() {
   const { sheets, loading, error } = useData();
   const [search, setSearch] = useState('');
-  const [filtersOpen, setFiltersOpen] = useState(false);
   const [areaFilter, setAreaFilter] = useState('');
 
   const sheetKey = Object.keys(sheets).find(k => k.toLowerCase().includes('expert'));
@@ -103,13 +103,8 @@ export default function ExpertsDirectoryPage() {
   const filtered = useMemo(() => {
     let list = experts;
     if (search.trim()) {
-      const q = search.toLowerCase();
-      list = list.filter(
-        e =>
-          e.name.toLowerCase().includes(q) ||
-          e.email.toLowerCase().includes(q) ||
-          e.comment.toLowerCase().includes(q) ||
-          e.specializations.some(s => s.toLowerCase().includes(q))
+      list = list.filter(e =>
+        matchesQuery(search, e.name, e.email, e.comment, ...e.specializations),
       );
     }
     if (areaFilter) list = list.filter(e => e.specializations.some(s => s === areaFilter));
@@ -123,38 +118,37 @@ export default function ExpertsDirectoryPage() {
         setAreaFilter('');
       }}
     >
-      <FilterField label="Search">
-        <input
-          type="text"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          placeholder="Name, specialization…"
-          className={inputClass}
-        />
-      </FilterField>
-      <FilterField label="Specialization">
-        <select value={areaFilter} onChange={e => setAreaFilter(e.target.value)} className={inputClass}>
-          <option value="">All</option>
-          {areaOptions.map(a => (
-            <option key={a} value={a}>
-              {a}
-            </option>
-          ))}
-        </select>
-      </FilterField>
+      <SearchInput
+        value={search}
+        onChange={setSearch}
+        placeholder="Search name, specialization…"
+        className="w-full sm:w-190"
+      />
+      <select
+        value={areaFilter}
+        onChange={e => setAreaFilter(e.target.value)}
+        className={`${inputClass} select-chevron w-full sm:w-80`}
+        aria-label="Filter by specialization"
+      >
+        <option value="">All specializations</option>
+        {areaOptions.map(a => (
+          <option key={a} value={a}>
+            {a}
+          </option>
+        ))}
+      </select>
     </FilterPanel>
   );
 
   return (
     <DirectoryPageLayout
+      eyebrow="Experts directory"
       title="Technical Experts Directory"
-      subtitle="Accredited ITU–GovStack consultants for global digital transformation projects."
+      subtitle="Accredited ITU-GovStack consultants for global digital transformation projects."
       loading={loading}
       error={error}
       sheetMissing={!sheetKey && !loading && !error}
       sheetMissingMessage="Experts sheet not found in the Excel file."
-      filtersOpen={filtersOpen}
-      onToggleFilters={() => setFiltersOpen(o => !o)}
       filtersPanel={filtersPanel}
       resultSummary={<ResultCount shown={filtered.length} total={experts.length} label="experts" />}
     >

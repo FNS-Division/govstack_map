@@ -70,7 +70,7 @@ export function mapRowToExpert(row: Record<string, string>, index: number): Expe
     specializations: splitSpecializations(row),
     location: row['Location'] || row['Country'] || row['Region'] || '—',
     contractType: row['Contract type'] || row['Contract Type'] || '—',
-    availability: row['Status']?.trim() || 'Available for ITU',
+    availability: row['Status']?.trim() || 'Available for ITU engagements',
     profileUrl,
     role: row['Role'] || '',
     comment: row['Comment on work'] || '',

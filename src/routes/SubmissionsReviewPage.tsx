@@ -8,7 +8,9 @@ import {
   type ReviewSubmissionStatus,
 } from '../api/activitySubmissions';
 import AppFooter from '../components/AppFooter';
-import { PageSpinner } from '../components/directory/DirectoryPageLayout';
+import { ResultCount, PageSpinner } from '../components/directory/DirectoryPageLayout';
+import { FilterPills, SearchInput } from '../components/directory/FilterPanel';
+import { matchesQuery } from '../utils/listSearch';
 import { useIsAdmin } from '../utils/authRoles';
 
 type StatusFilter = 'all' | 'pending' | 'validated' | 'rejected';
@@ -250,23 +252,18 @@ export default function SubmissionsReviewPage() {
   );
 
   const filtered = useMemo(() => {
-    const query = search.trim().toLowerCase();
     return records.filter(record => {
       const reviewStatus = normalizeReviewStatus(record.submission_status);
       if (statusFilter !== 'all' && reviewStatus !== statusFilter) return false;
-      if (!query) return true;
-      const haystack = [
+      return matchesQuery(
+        search,
         record.activity,
         record.country,
         record.region,
         record.description,
         record.submitted_by,
         record.submission_id,
-      ]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase();
-      return haystack.includes(query);
+      );
     });
   }, [records, search, statusFilter]);
 
@@ -286,9 +283,7 @@ export default function SubmissionsReviewPage() {
       <div className="mx-auto w-full max-w-[1100px] flex-1 px-4 py-6 sm:px-6 lg:px-8">
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0539E3]">
-              Admin review
-            </p>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0539E3]">Admin review</p>
             <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900">
               Activity submissions
             </h1>
@@ -323,35 +318,22 @@ export default function SubmissionsReviewPage() {
         ) : (
           <>
             <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex flex-wrap gap-2">
-                {STATUS_FILTERS.map(filter => (
-                  <button
-                    key={filter.id}
-                    type="button"
-                    onClick={() => setStatusFilter(filter.id)}
-                    className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
-                      statusFilter === filter.id
-                        ? 'bg-[#0539E3] text-white'
-                        : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
-                    }`}
-                  >
-                    {filter.label}
-                    <span className="ml-1 opacity-80">({counts[filter.id]})</span>
-                  </button>
-                ))}
-              </div>
-              <input
-                type="search"
+              <FilterPills
+                options={STATUS_FILTERS}
+                active={statusFilter}
+                onChange={setStatusFilter}
+                counts={counts}
+                size="md"
+              />
+              <SearchInput
                 value={search}
-                onChange={event => setSearch(event.target.value)}
+                onChange={setSearch}
                 placeholder="Search activity, country, submitter…"
-                className="w-full max-w-sm rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm placeholder:text-slate-400 focus:border-[#0539E3] focus:outline-none focus:ring-1 focus:ring-[#0539E3]"
+                className="w-full max-w-sm"
               />
             </div>
 
-            <p className="mb-4 text-sm text-slate-500">
-              Showing {filtered.length} of {records.length} submission{records.length === 1 ? '' : 's'}
-            </p>
+            <ResultCount shown={filtered.length} total={records.length} label="submissions" />
 
             {filtered.length === 0 ? (
               <div className="rounded-xl border border-dashed border-slate-200 bg-white py-16 text-center text-sm text-slate-500">

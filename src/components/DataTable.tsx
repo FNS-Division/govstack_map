@@ -1,4 +1,7 @@
 import { useState, useMemo } from 'react';
+import { matchesQuery } from '../utils/listSearch';
+import { ResultCount } from './directory/DirectoryPageLayout';
+import { SearchInput } from './directory/FilterPanel';
 
 interface DataTableProps {
   headers: string[];
@@ -14,8 +17,7 @@ export default function DataTable({ headers, rows, title }: DataTableProps) {
   const filtered = useMemo(() => {
     let data = rows;
     if (search.trim()) {
-      const q = search.toLowerCase();
-      data = data.filter(row => Object.values(row).some(v => String(v).toLowerCase().includes(q)));
+      data = data.filter(row => matchesQuery(search, ...Object.values(row)));
     }
     if (sortCol) {
       data = [...data].sort((a, b) => {
@@ -37,34 +39,29 @@ export default function DataTable({ headers, rows, title }: DataTableProps) {
   }
 
   return (
-    <div className="flex flex-col gap-4 h-full">
+    <div className="flex h-full flex-col gap-4">
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 flex-shrink-0">
+      <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h2 className="text-lg font-bold text-gray-800">{title}</h2>
-          <p className="text-xs text-gray-400 mt-0.5">
-            {filtered.length} of {rows.length} records
-          </p>
+          <h2 className="text-lg font-bold text-slate-900">{title}</h2>
+          <div className="mt-1">
+            <ResultCount shown={filtered.length} total={rows.length} label="records" />
+          </div>
         </div>
-        <div className="relative">
-          <svg className="absolute left-2.5 top-2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input
-            type="text"
+        <div className="flex w-full items-center gap-2 sm:w-auto">
+          <SearchInput
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={setSearch}
             placeholder="Search all columns…"
-            className="pl-8 pr-8 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400 w-56 text-gray-700"
+            className="w-full sm:w-72"
           />
-          {search && (
+          {search.trim() && (
             <button
+              type="button"
               onClick={() => setSearch('')}
-              className="absolute right-2.5 top-2 text-gray-400 hover:text-gray-600"
+              className="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:text-[#0539E3]"
             >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              Clear
             </button>
           )}
         </div>
@@ -72,19 +69,19 @@ export default function DataTable({ headers, rows, title }: DataTableProps) {
 
       {/* Scrollable table */}
       <div
-        className="rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col"
+        className="flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
         style={{ maxHeight: 'calc(100vh - 11rem)' }}
       >
         {/* Sticky header */}
-        <div className="overflow-x-auto flex-shrink-0">
+        <div className="flex-shrink-0 overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-blue-600 text-white">
+              <tr className="bg-[#0539E3] text-white">
                 {headers.map(h => (
                   <th
                     key={h}
                     onClick={() => handleSort(h)}
-                    className="px-4 py-2.5 text-left cursor-pointer select-none whitespace-nowrap text-xs font-semibold tracking-wide hover:bg-blue-700 transition-colors"
+                    className="cursor-pointer select-none whitespace-nowrap px-4 py-2.5 text-left text-xs font-semibold tracking-wide transition-colors hover:bg-[#0432c4]"
                   >
                     <div className="flex items-center gap-1">
                       {h}
@@ -108,10 +105,10 @@ export default function DataTable({ headers, rows, title }: DataTableProps) {
         {/* Scrollable body */}
         <div className="overflow-auto flex-1">
           <table className="w-full text-sm">
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-slate-100">
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={headers.length} className="text-center py-10 text-gray-400 text-sm">
+                  <td colSpan={headers.length} className="py-10 text-center text-sm text-slate-400">
                     No results found
                   </td>
                 </tr>
@@ -119,10 +116,10 @@ export default function DataTable({ headers, rows, title }: DataTableProps) {
                 filtered.map((row, i) => (
                   <tr
                     key={i}
-                    className={`transition-colors hover:bg-blue-50/50 ${i % 2 === 1 ? 'bg-gray-50/50' : 'bg-white'}`}
+                    className={`transition-colors hover:bg-slate-50 ${i % 2 === 1 ? 'bg-slate-50/40' : 'bg-white'}`}
                   >
                     {headers.map(h => (
-                      <td key={h} className="px-4 py-2.5 text-gray-700 max-w-xs whitespace-nowrap">
+                      <td key={h} className="max-w-xs whitespace-nowrap px-4 py-2.5 text-slate-700">
                         <div className="truncate" title={row[h] || '—'}>
                           {row[h] || <span className="text-gray-300">—</span>}
                         </div>

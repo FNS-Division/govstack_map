@@ -4,6 +4,7 @@ import MapView, { type ActivityRow, type FocalPointRow } from '../components/Map
 import FilterSidebar, { type Filters } from '../components/FilterSidebar';
 import UnmappedPanel from '../components/UnmappedPanel';
 import { getCoordinates } from '../data/countryCoordinates';
+import { matchesQuery } from '../utils/listSearch';
 
 function unique(arr: string[]): string[] {
   return [...new Set(arr.filter(Boolean))].sort();
@@ -81,14 +82,7 @@ export default function GlobalMap() {
       if (filters.status && row.status !== filters.status) return false;
       if (filters.activity && row.activity !== filters.activity) return false;
       if (filters.focalPoint && row.focalPoint !== filters.focalPoint) return false;
-      if (filters.search) {
-        const q = filters.search.toLowerCase();
-        if (
-          !row.country.toLowerCase().includes(q) &&
-          !row.description.toLowerCase().includes(q) &&
-          !row.activity.toLowerCase().includes(q)
-        ) return false;
-      }
+      if (!matchesQuery(filters.search, row.country, row.description, row.activity)) return false;
       return true;
     });
   }, [allActivities, filters]);
@@ -97,13 +91,7 @@ export default function GlobalMap() {
   const filteredFocalPoints = useMemo(() => {
     return allFocalPoints.filter(row => {
       if (filters.region && row.region !== filters.region) return false;
-      if (filters.search) {
-        const q = filters.search.toLowerCase();
-        if (
-          !row.name.toLowerCase().includes(q) &&
-          !row.location.toLowerCase().includes(q)
-        ) return false;
-      }
+      if (!matchesQuery(filters.search, row.name, row.location)) return false;
       return true;
     });
   }, [allFocalPoints, filters]);

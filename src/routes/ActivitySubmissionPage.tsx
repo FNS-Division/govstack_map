@@ -47,7 +47,7 @@ const initialForm: ActivitySubmissionForm = {
 };
 
 const fieldBaseClass =
-  'w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm transition-colors focus:border-[#0539E3] focus:outline-none focus:ring-1 focus:ring-[#0539E3]';
+  'w-full rounded-lg border border-slate-200 bg-white px-3 pr-9 py-2 text-sm shadow-sm transition-colors focus:border-[#0539E3] focus:outline-none focus:ring-1 focus:ring-[#0539E3]';
 
 const inputClass = `${fieldBaseClass} text-slate-800 placeholder:text-slate-400`;
 
@@ -55,7 +55,7 @@ const selectOptionClass = 'text-slate-800';
 
 function selectClass(value: string, disabled = false) {
   const tone = value && !disabled ? 'text-slate-800' : 'text-slate-400';
-  return `mt-1.5 ${fieldBaseClass} ${tone}`;
+  return `mt-1.5 ${fieldBaseClass} select-chevron ${tone}`;
 }
 
 const labelClass = 'text-sm font-medium text-slate-700';

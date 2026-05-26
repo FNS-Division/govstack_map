@@ -3,15 +3,16 @@ import AppFooter from '../AppFooter';
 import FiltersIcon from '../FiltersIcon';
 
 type DirectoryPageLayoutProps = {
+  eyebrow?: string;
   title: string;
   subtitle: string;
   loading: boolean;
   error: string | null;
   sheetMissing?: boolean;
   sheetMissingMessage?: string;
-  filtersOpen: boolean;
-  onToggleFilters: () => void;
-  filtersPanel: ReactNode;
+  filtersOpen?: boolean;
+  onToggleFilters?: () => void;
+  filtersPanel?: ReactNode;
   resultSummary: ReactNode;
   children: ReactNode;
 };
@@ -29,6 +30,7 @@ export function PageSpinner() {
 }
 
 export default function DirectoryPageLayout({
+  eyebrow,
   title,
   subtitle,
   loading,
@@ -56,20 +58,27 @@ export default function DirectoryPageLayout({
       <div className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-6 sm:px-6 lg:px-8">
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">{title}</h1>
-            <p className="mt-1 max-w-2xl text-sm text-slate-500">{subtitle}</p>
+            {eyebrow && (
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0539E3]">{eyebrow}</p>
+            )}
+            <h1 className={`text-2xl font-bold tracking-tight text-slate-900 ${eyebrow ? 'mt-2' : ''}`}>
+              {title}
+            </h1>
+            <p className={`max-w-2xl text-sm text-slate-500 ${eyebrow ? 'mt-2' : 'mt-1'}`}>{subtitle}</p>
           </div>
-          <button
-            type="button"
-            onClick={onToggleFilters}
-            className="inline-flex items-center gap-2 self-start rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
-          >
-            <FiltersIcon />
-            Filters
-          </button>
+          {onToggleFilters && filtersPanel && (
+            <button
+              type="button"
+              onClick={onToggleFilters}
+              className="inline-flex items-center gap-2 self-start rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
+            >
+              <FiltersIcon />
+              Filters
+            </button>
+          )}
         </div>
 
-        {filtersOpen && filtersPanel}
+        {filtersPanel && (onToggleFilters ? Boolean(filtersOpen) : true) && filtersPanel}
 
         {resultSummary}
 

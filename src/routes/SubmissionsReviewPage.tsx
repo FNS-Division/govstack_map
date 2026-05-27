@@ -7,6 +7,8 @@ import {
   type ActivitySubmissionRecord,
   type ReviewSubmissionStatus,
 } from '../api/activitySubmissions';
+import { upsertPublishedActivityFromSubmission } from '../api/publishedActivities';
+import { fetchAuthSession } from 'aws-amplify/auth';
 import AppFooter from '../components/AppFooter';
 import { ResultCount, PageSpinner } from '../components/directory/DirectoryPageLayout';
 import { FilterPills, SearchInput } from '../components/directory/FilterPanel';
@@ -231,10 +233,23 @@ export default function SubmissionsReviewPage() {
       setUpdatingId(submissionId);
       setActionError(null);
       try {
+        const record = records.find(item => item.submission_id === submissionId);
+        if (!record) {
+          throw new Error('Submission not found.');
+        }
+
+        if (status === 'validated') {
+          const session = await fetchAuthSession();
+          const publishedBy =
+            session.tokens?.idToken?.payload['email']?.toString() ??
+            session.tokens?.idToken?.payload['cognito:username']?.toString();
+          await upsertPublishedActivityFromSubmission(record, publishedBy);
+        }
+
         const updated = await updateActivitySubmissionReviewStatus(submissionId, status);
         setRecords(current =>
-          current.map(record =>
-            record.submission_id === submissionId ? { ...record, ...updated } : record,
+          current.map(item =>
+            item.submission_id === submissionId ? { ...item, ...updated } : item,
           ),
         );
       } catch (err) {
@@ -248,7 +263,7 @@ export default function SubmissionsReviewPage() {
         setUpdatingId(null);
       }
     },
-    [],
+    [records],
   );
 
   const filtered = useMemo(() => {

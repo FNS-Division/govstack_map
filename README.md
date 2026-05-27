@@ -126,3 +126,9 @@ If your sheet names change, update the keyword matches in `src/routes/GlobalMap.
 - **Cognito:** Create group `admins` and add reviewer users manually — see [docs/COGNITO_ADMIN_GROUP.md](docs/COGNITO_ADMIN_GROUP.md).
 - **AppSync:** Restrict `list` / `update` submission APIs to the `admins` group — see [docs/APPSYNC_ADMIN_AUTH.md](docs/APPSYNC_ADMIN_AUTH.md).
 - **Frontend:** Review nav and `/admin/submissions` are shown only when the signed-in user’s ID token includes `cognito:groups: ["admins"]` (re-login after joining the group).
+
+## Published activities (`govstack_activities`)
+
+Main map database (DynamoDB + AppSync). Step-by-step AWS setup: [docs/GOVSTACK_ACTIVITIES_SETUP.md](docs/GOVSTACK_ACTIVITIES_SETUP.md).
+
+Published activities use Cognito only (dashboard requires sign-in; no AppSync API key).

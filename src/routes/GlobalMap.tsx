@@ -1,10 +1,16 @@
-import { useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import { listAllPublishedActivities } from '../api/publishedActivities';
 import { useData } from '../context/DataContext';
 import MapView, { type ActivityRow, type FocalPointRow } from '../components/MapView';
 import FilterSidebar, { type Filters } from '../components/FilterSidebar';
 import UnmappedPanel from '../components/UnmappedPanel';
 import { getCoordinates } from '../data/countryCoordinates';
 import { matchesQuery } from '../utils/listSearch';
+import {
+  excelRowToActivityRow,
+  mergeMapActivities,
+  publishedToActivityRow,
+} from '../utils/mergeMapActivities';
 
 function unique(arr: string[]): string[] {
   return [...new Set(arr.filter(Boolean))].sort();
@@ -21,6 +27,28 @@ export default function GlobalMap() {
     search: '',
   });
   const [showUnmapped, setShowUnmapped] = useState(false);
+  const [publishedActivities, setPublishedActivities] = useState<ActivityRow[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const items = await listAllPublishedActivities();
+        if (!cancelled) {
+          setPublishedActivities(items.map(publishedToActivityRow));
+        }
+      } catch {
+        if (!cancelled) {
+          setPublishedActivities([]);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const globalViewSheet = useMemo(() => {
     const key = Object.keys(sheets).find(k =>
@@ -36,21 +64,17 @@ export default function GlobalMap() {
     return key ? sheets[key] : null;
   }, [sheets]);
 
-  // Parse activity rows
-  const allActivities = useMemo((): ActivityRow[] => {
+  const excelActivities = useMemo((): ActivityRow[] => {
     if (!globalViewSheet) return [];
-    return globalViewSheet.rows.map((row, i) => ({
-      id: `act-${i}`,
-      country: row['Country'] || row['country'] || '',
-      region: row['Region'] || '',
-      activity: row['Activity'] || '',
-      description: row['Description'] || '',
-      status: row['Status'] || '',
-      focalPoint: row['Focal Point'] || '',
-      budget: row['Budget'] || '',
-      timeline: row['Timeline'] || '',
-    })).filter(r => r.country);
+    return globalViewSheet.rows
+      .map(row => excelRowToActivityRow(row as Record<string, string>))
+      .filter((row): row is ActivityRow => row !== null);
   }, [globalViewSheet]);
+
+  const allActivities = useMemo(
+    () => mergeMapActivities(excelActivities, publishedActivities),
+    [excelActivities, publishedActivities],
+  );
 
   // Parse focal point rows
   const allFocalPoints = useMemo((): FocalPointRow[] => {

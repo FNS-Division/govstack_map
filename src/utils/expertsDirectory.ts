@@ -1,5 +1,3 @@
-import { tagClass } from './tagStyles';
-
 export interface ExpertRecord {
   id: string;
   name: string;
@@ -35,7 +33,11 @@ export function avatarClass(name: string): string {
   return AVATAR_PALETTE[Math.abs(hash) % AVATAR_PALETTE.length];
 }
 
-export { tagClass };
+/** Single style for specialization pills — avoids implying availability by color. */
+export const expertSpecializationTagClass = {
+  bg: 'bg-blue-50',
+  text: 'text-blue-700',
+} as const;
 
 function inferEmail(name: string, profileUrl: string): string {
   const linkedInMatch = profileUrl.match(/linkedin\.com\/in\/([^/?]+)/i);

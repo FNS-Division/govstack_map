@@ -7,8 +7,8 @@ import {
   avatarClass,
   expertMetaRows,
   initials,
+  expertSpecializationTagClass,
   mapRowToExpert,
-  tagClass,
   type ExpertRecord,
 } from '../utils/expertsDirectory';
 
@@ -46,17 +46,14 @@ function ExpertCard({ expert }: { expert: ExpertRecord }) {
 
           {expert.specializations.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-1.5">
-              {expert.specializations.map(tag => {
-                const style = tagClass(tag);
-                return (
-                  <span
-                    key={tag}
-                    className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${style.bg} ${style.text}`}
-                  >
-                    {tag}
-                  </span>
-                );
-              })}
+              {expert.specializations.map(tag => (
+                <span
+                  key={tag}
+                  className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${expertSpecializationTagClass.bg} ${expertSpecializationTagClass.text}`}
+                >
+                  {tag}
+                </span>
+              ))}
             </div>
           )}
 

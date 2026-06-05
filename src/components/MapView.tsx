@@ -40,22 +40,43 @@ const ACTIVITY_COLOR = '#2563eb'; // bright blue
 const FOCAL_COLOR    = '#e11d48'; // rose-red
 const MARKER_BORDER  = '#ffffff';
 
-export default function MapView({ activities, focalPoints }: MapViewProps) {
-  const activityMarkers = useMemo(() => {
-    const resolved = activities
-      .map(row => { const c = getCoordinates(row.country); return c ? { ...row, lat: c[0], lng: c[1] } : null; })
-      .filter(Boolean) as (ActivityRow & { lat: number; lng: number })[];
-    const offsets = computeOffsets(resolved);
-    return resolved.map((row, i) => ({ ...row, lat: offsets[i][0], lng: offsets[i][1] }));
-  }, [activities]);
+type ActivityMarker = ActivityRow & { lat: number; lng: number };
+type FocalMarker = FocalPointRow & { lat: number; lng: number };
+type ResolvedMarker =
+  | ({ type: 'activity' } & ActivityMarker)
+  | ({ type: 'focal' } & FocalMarker);
 
-  const focalMarkers = useMemo(() => {
-    const resolved = focalPoints
-      .map(row => { const loc = row.location || row.name; const c = getCoordinates(loc); return c ? { ...row, lat: c[0], lng: c[1] } : null; })
-      .filter(Boolean) as (FocalPointRow & { lat: number; lng: number })[];
-    const offsets = computeOffsets(resolved);
-    return resolved.map((row, i) => ({ ...row, lat: offsets[i][0], lng: offsets[i][1] }));
-  }, [focalPoints]);
+export default function MapView({ activities, focalPoints }: MapViewProps) {
+  const { activityMarkers, focalMarkers } = useMemo(() => {
+    const resolvedActivities = activities
+      .map((row): ResolvedMarker | null => {
+        const c = getCoordinates(row.country);
+        return c ? { ...row, type: 'activity', lat: c[0], lng: c[1] } : null;
+      })
+      .filter((row): row is ResolvedMarker => row !== null);
+
+    const resolvedFocalPoints = focalPoints
+      .map((row): ResolvedMarker | null => {
+        const loc = row.location || row.name;
+        const c = getCoordinates(loc);
+        return c ? { ...row, type: 'focal', lat: c[0], lng: c[1] } : null;
+      })
+      .filter((row): row is ResolvedMarker => row !== null);
+
+    const resolvedMarkers = [...resolvedActivities, ...resolvedFocalPoints];
+    const offsets = computeOffsets(resolvedMarkers);
+
+    const offsetMarkers = resolvedMarkers.map((row, i) => ({
+      ...row,
+      lat: offsets[i][0],
+      lng: offsets[i][1],
+    }));
+
+    return {
+      activityMarkers: offsetMarkers.filter((row): row is { type: 'activity' } & ActivityMarker => row.type === 'activity'),
+      focalMarkers: offsetMarkers.filter((row): row is { type: 'focal' } & FocalMarker => row.type === 'focal'),
+    };
+  }, [activities, focalPoints]);
 
   return (
     <MapContainer

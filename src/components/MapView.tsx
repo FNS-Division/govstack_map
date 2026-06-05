@@ -15,6 +15,8 @@ export interface ActivityRow {
   focalPoint: string;
   budget: string;
   timeline: string;
+  resources: string;
+  resourcesUrl: string;
 }
 
 export interface FocalPointRow {
@@ -125,6 +127,10 @@ export default function MapView({ activities, focalPoints }: MapViewProps) {
                 { label: 'Budget',      value: row.budget },
                 { label: 'Timeline',    value: row.timeline },
               ]}
+              actionLink={row.resourcesUrl ? {
+                href: row.resourcesUrl,
+                label: 'Download resources',
+              } : undefined}
             />
           </Popup>
         </CircleMarker>

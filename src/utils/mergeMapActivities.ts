@@ -19,6 +19,8 @@ export function excelRowToActivityRow(row: Record<string, string>): ActivityRow 
     focalPoint: row['Focal Point'] || '',
     budget: row['Budget'] || '',
     timeline: row['Timeline'] || '',
+    resources: row['Resources'] || '',
+    resourcesUrl: row['Resources URL'] || '',
   };
 }
 
@@ -33,6 +35,8 @@ export function publishedToActivityRow(record: PublishedActivityRecord): Activit
     focalPoint: record.focal_point ?? '',
     budget: record.budget ?? '',
     timeline: record.timeline ?? '',
+    resources: '',
+    resourcesUrl: '',
   };
 }
 

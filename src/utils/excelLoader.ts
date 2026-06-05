@@ -32,6 +32,7 @@ const KNOWN_HEADER_NAMES = new Set([
   'Phone',
   'Priority',
   'Region',
+  'Resources',
   'Status',
   'Target Audience',
   'Timeline',
@@ -69,6 +70,20 @@ function findHeaderRowIndex(rawData: string[][]): number {
   return firstNonEmptyRow;
 }
 
+function getCellHyperlinkTarget(
+  worksheet: XLSX.WorkSheet,
+  rangeStart: XLSX.CellAddress,
+  rowIndex: number,
+  columnIndex: number
+): string {
+  const address = XLSX.utils.encode_cell({
+    r: rangeStart.r + rowIndex,
+    c: rangeStart.c + columnIndex,
+  });
+  const cell = worksheet[address] as (XLSX.CellObject & { l?: { Target?: string } }) | undefined;
+  return cell?.l?.Target?.trim() ?? '';
+}
+
 export async function loadExcel(filePath: string): Promise<Record<string, SheetData>> {
   const response = await fetch(filePath);
   const arrayBuffer = await response.arrayBuffer();
@@ -78,6 +93,9 @@ export async function loadExcel(filePath: string): Promise<Record<string, SheetD
 
   for (const sheetName of workbook.SheetNames) {
     const worksheet = workbook.Sheets[sheetName];
+    const rangeStart = worksheet['!ref']
+      ? XLSX.utils.decode_range(worksheet['!ref']).s
+      : { r: 0, c: 0 };
     const rawData = XLSX.utils.sheet_to_json<string[]>(worksheet, {
       header: 1,
       defval: '',
@@ -105,6 +123,8 @@ export async function loadExcel(filePath: string): Promise<Record<string, SheetD
         const cell = rowArr[idx];
         const val = cell !== null && cell !== undefined ? String(cell).trim() : '';
         row[header] = val ? fixKnownDataTypos(val) : val;
+        const hyperlinkTarget = getCellHyperlinkTarget(worksheet, rangeStart, i, idx);
+        if (hyperlinkTarget) row[`${header} URL`] = hyperlinkTarget;
         if (val) hasValue = true;
       });
 

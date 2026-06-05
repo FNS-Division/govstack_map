@@ -7,6 +7,68 @@ export interface SheetData {
   rows: Record<string, string>[];
 }
 
+const KNOWN_HEADER_NAMES = new Set([
+  'Activity',
+  'Budget',
+  'Category',
+  'Comments',
+  'Contact',
+  'Country',
+  'Date',
+  'Description',
+  'Email',
+  'Expertise',
+  'Focal Point',
+  'Format',
+  'Input',
+  'Language',
+  'Link',
+  'Location',
+  'Name',
+  'Notes',
+  'Organization',
+  'Output',
+  'Owner',
+  'Phone',
+  'Priority',
+  'Region',
+  'Status',
+  'Target Audience',
+  'Timeline',
+  'Title',
+  'Type',
+  'Type of Asset',
+  'URL',
+]);
+
+function normalizeRowValues(row: unknown[]): string[] {
+  return row.map(cell => (
+    cell !== null && cell !== undefined ? String(cell).trim() : ''
+  ));
+}
+
+function findHeaderRowIndex(rawData: string[][]): number {
+  let firstNonEmptyRow = 0;
+
+  for (let i = 0; i < rawData.length; i++) {
+    const values = normalizeRowValues(rawData[i] as unknown[]);
+    const nonEmptyCount = values.filter(Boolean).length;
+    if (nonEmptyCount === 0) continue;
+
+    if (i === 0 || rawData[firstNonEmptyRow]?.every(cell => !String(cell).trim())) {
+      firstNonEmptyRow = i;
+    }
+
+    const knownHeaderCount = values
+      .map(normalizeHeader)
+      .filter(header => KNOWN_HEADER_NAMES.has(header)).length;
+
+    if (knownHeaderCount >= 2) return i;
+  }
+
+  return firstNonEmptyRow;
+}
+
 export async function loadExcel(filePath: string): Promise<Record<string, SheetData>> {
   const response = await fetch(filePath);
   const arrayBuffer = await response.arrayBuffer();
@@ -27,19 +89,19 @@ export async function loadExcel(filePath: string): Promise<Record<string, SheetD
       continue;
     }
 
-    const rawHeaders: string[] = (rawData[0] as unknown[]).map(h =>
-      h !== null && h !== undefined ? String(h).trim() : ''
-    );
+    const headerRowIndex = findHeaderRowIndex(rawData);
+    const rawHeaders = normalizeRowValues(rawData[headerRowIndex] as unknown[]);
 
     const normalizedHeaders = rawHeaders.map(normalizeHeader);
 
     const rows: Record<string, string>[] = [];
-    for (let i = 1; i < rawData.length; i++) {
+    for (let i = headerRowIndex + 1; i < rawData.length; i++) {
       const rowArr: unknown[] = rawData[i] as unknown[];
       const row: Record<string, string> = {};
       let hasValue = false;
 
       normalizedHeaders.forEach((header, idx) => {
+        if (!header) return;
         const cell = rowArr[idx];
         const val = cell !== null && cell !== undefined ? String(cell).trim() : '';
         row[header] = val ? fixKnownDataTypos(val) : val;

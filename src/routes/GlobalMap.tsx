@@ -16,6 +16,10 @@ function unique(arr: string[]): string[] {
   return [...new Set(arr.filter(Boolean))].sort();
 }
 
+function sameText(a: string, b: string): boolean {
+  return a.trim().toLowerCase() === b.trim().toLowerCase();
+}
+
 export default function GlobalMap() {
   const { sheets, loading, error } = useData();
 
@@ -111,10 +115,11 @@ export default function GlobalMap() {
     });
   }, [allActivities, filters]);
 
-  // Apply focal point filters (region + search only)
+  // Apply focal point filters
   const filteredFocalPoints = useMemo(() => {
     return allFocalPoints.filter(row => {
       if (filters.region && row.region !== filters.region) return false;
+      if (filters.focalPoint && !sameText(row.name, filters.focalPoint)) return false;
       if (!matchesQuery(filters.search, row.name, row.location)) return false;
       return true;
     });

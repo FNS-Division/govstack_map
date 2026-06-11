@@ -18,7 +18,7 @@ export default function MarkerPopup({ title, subtitle, fields, type, actionLink 
   const headerBg = type === 'focal' ? '#e11d48' : '#2563eb';
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', fontSize: 13, width: 272 }}>
+    <div style={{ fontFamily: 'inherit', fontSize: 13, width: 272 }}>
       {/* header */}
       <div style={{ background: headerBg, padding: '10px 14px 10px' }}>
         <div style={{ marginBottom: 4 }}>

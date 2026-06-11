@@ -1,10 +1,19 @@
 import { createTheme, defaultTheme } from '@aws-amplify/ui-react';
 
+const avenirStack =
+  "'Avenir Next', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif";
+
 /** Align Amplify UI tokens with GovStack dashboard (#0539E3, slate surfaces). */
 export const govstackAuthTheme = createTheme(
   {
     name: 'govstack-auth-theme',
     tokens: {
+      fonts: {
+        default: {
+          variable: { value: avenirStack },
+          static: { value: avenirStack },
+        },
+      },
       colors: {
         primary: {
           10: '#e8edfd',

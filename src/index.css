@@ -263,3 +263,8 @@ body,
 .govstack-auth .amplify-text[data-variation='secondary'] {
   color: #64748b;
 }
+
+/* Hide the "Forgot your password?" link */
+.govstack-auth .amplify-button--link {
+  display: none;
+}
